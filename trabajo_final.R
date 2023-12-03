@@ -393,8 +393,50 @@ mapeo_D_500 <- function(hora,intensidad,longitud,latitud,segmentos) {
     geom_contour(aes(z = intensidad),color = "black",linewidth = 0.1) +
     geom_point(data = ubicacionvolcan, aes(x = longitud, y = latitud),color = "orange",size = 4) +
     geom_segment(data = segmentos,
-                 aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2),
+                 aes(x = lon_1_b, y = lat_1_b, xend = lon_2_b, yend = lat_2_b),
                  color = "orange",linewidth = 2) +
+    geom_arrow(aes(dx = u,dy = v),
+               skip = 12,
+               size = 1,
+               color = "black") +
+    scale_mag(name = NULL,
+              max_size = 1) +
+    scale_fill_distiller(palette = "BuPu",
+                         direction = 1,
+                         super = ScaleContinuous,
+                         limits = c(floor(rango_valores[1]),ceiling(rango_valores[2])),
+                         breaks = escala,
+                         guide = guide_colorsteps(barheight = 20,
+                                                  barwidth = 4)) +
+    mi_mapa +
+    coord_sf( xlim = range(longitud),
+              ylim = range(latitud),
+              expand = F) +
+    theme_bw() +
+    labs(x = NULL,
+         y = NULL,
+         fill = "m/s") +
+    theme(legend.position = "left",
+          legend.text = element_text(size = 25),
+          legend.title = element_text(size = 30))
+}
+
+mapeo_final <- function(hora,intensidad,longitud,latitud,segmentosa,segmentosb) {
+  radical_b <- c(max500_D,min500_D)
+  rango_valores <- range(radical_b)
+  num_ticks = 15
+  escala <- seq(floor(rango_valores[1]),ceiling(rango_valores[2]),by = num_ticks)
+  ggplot(hora,aes(x = longitud,
+                  y = latitud)) +
+    geom_contour_fill(aes(z = intensidad)) +
+    geom_contour(aes(z = intensidad),color = "black",linewidth = 0.1) +
+    geom_point(data = ubicacionvolcan, aes(x = longitud, y = latitud),color = "orange",size = 4) +
+    geom_segment(data = segmentosb,
+                 aes(x = lon_1_b, y = lat_1_b, xend = lon_2_b, yend = lat_2_b),
+                 color = "orange",linewidth = 2) +
+    geom_segment(data = segmentosa,
+                 aes(x = lon_1, y = lat_1, xend = lon_2, yend = lat_2),
+                 color = "red",linewidth = 2) +
     geom_arrow(aes(dx = u,dy = v),
                skip = 12,
                size = 1,
@@ -904,10 +946,10 @@ ubicacion04.18_500 <- data.frame("lon" = -71.25,"lat" = -42)
 ubicacion05.00_500 <- funcion_desplazamiento(datoslista_500hPa_04$dieciocho,ubicacion04.18_500)
 ubicacion05.00_500 <- data.frame("lon" = -69.5,"lat" = -45)
 
-lonlats04_500 <- data.frame(lat_1 = c(ubicacionvolcan[1,2],ubicacion04.18_500[1,2]),
-                            lat_2 = c(ubicacion04.18_500[1,2],ubicacion05.00_500[1,2]),
-                            lon_1 = c(ubicacionvolcan[1,1],ubicacion04.18_500[1,1]),
-                            lon_2 = c(ubicacion04.18_500[1,1],ubicacion05.00_500[1,1]))
+lonlats04_500 <- data.frame(lat_1_b = c(ubicacionvolcan[1,2],ubicacion04.18_500[1,2]),
+                            lat_2_b = c(ubicacion04.18_500[1,2],ubicacion05.00_500[1,2]),
+                            lon_1_b = c(ubicacionvolcan[1,1],ubicacion04.18_500[1,1]),
+                            lon_2_b = c(ubicacion04.18_500[1,1],ubicacion05.00_500[1,1]))
 dia04_500 <- mapeo_D_500(datoslista_500hPa_05$cero,
                  datoslista_500hPa_05$cero$intensidad,
                  datoslista_500hPa_05$cero$longitude,
@@ -926,10 +968,10 @@ ubicacion05.18_500 <- data.frame("lon" = -62.5,"lat" = -45.75)
 ubicacion06.00_500 <- funcion_desplazamiento(datoslista_500hPa_05$dieciocho,ubicacion05.18_500)
 ubicacion06.00_500 <- data.frame("lon" = -60,"lat" = -45)
 
-lonlats05_500 <- data.frame(lat_1 = c(lonlats04_500$lat_1,ubicacion05.00_500[1,2],ubicacion05.06_500[1,2],ubicacion05.12_500[1,2],ubicacion05.18_500[1,2]),
-                            lat_2 = c(lonlats04_500$lat_2,ubicacion05.06_500[1,2],ubicacion05.12_500[1,2],ubicacion05.18_500[1,2],ubicacion06.00_500[1,2]),
-                            lon_1 = c(lonlats04_500$lon_1,ubicacion05.00_500[1,1],ubicacion05.06_500[1,1],ubicacion05.12_500[1,1],ubicacion05.18_500[1,1]),
-                            lon_2 = c(lonlats04_500$lon_2,ubicacion05.06_500[1,1],ubicacion05.12_500[1,1],ubicacion05.18_500[1,1],ubicacion06.00_500[1,1]))
+lonlats05_500 <- data.frame(lat_1_b = c(lonlats04_500$lat_1_b,ubicacion05.00_500[1,2],ubicacion05.06_500[1,2],ubicacion05.12_500[1,2],ubicacion05.18_500[1,2]),
+                            lat_2_b = c(lonlats04_500$lat_2_b,ubicacion05.06_500[1,2],ubicacion05.12_500[1,2],ubicacion05.18_500[1,2],ubicacion06.00_500[1,2]),
+                            lon_1_b = c(lonlats04_500$lon_1_b,ubicacion05.00_500[1,1],ubicacion05.06_500[1,1],ubicacion05.12_500[1,1],ubicacion05.18_500[1,1]),
+                            lon_2_b = c(lonlats04_500$lon_2_b,ubicacion05.06_500[1,1],ubicacion05.12_500[1,1],ubicacion05.18_500[1,1],ubicacion06.00_500[1,1]))
 dia05_500 <- mapeo_D_500(datoslista_500hPa_06$cero,
                          datoslista_500hPa_06$cero$intensidad,
                          datoslista_500hPa_06$cero$longitude,
@@ -948,10 +990,10 @@ ubicacion06.18_500 <- data.frame("lon" = -46,"lat" = -44)
 ubicacion07.00_500 <- funcion_desplazamiento(datoslista_500hPa_06$dieciocho,ubicacion06.18_500)
 ubicacion07.00_500 <- data.frame("lon" = -39,"lat" = -44.25)
 
-lonlats06_500 <- data.frame(lat_1 = c(lonlats05_500$lat_1,ubicacion06.00_500[1,2],ubicacion06.06_500[1,2],ubicacion06.12_500[1,2],ubicacion06.18_500[1,2]),
-                            lat_2 = c(lonlats05_500$lat_2,ubicacion06.06_500[1,2],ubicacion06.12_500[1,2],ubicacion06.18_500[1,2],ubicacion07.00_500[1,2]),
-                            lon_1 = c(lonlats05_500$lon_1,ubicacion06.00_500[1,1],ubicacion06.06_500[1,1],ubicacion06.12_500[1,1],ubicacion06.18_500[1,1]),
-                            lon_2 = c(lonlats05_500$lon_2,ubicacion06.06_500[1,1],ubicacion06.12_500[1,1],ubicacion06.18_500[1,1],ubicacion07.00_500[1,1]))
+lonlats06_500 <- data.frame(lat_1_b = c(lonlats05_500$lat_1_b,ubicacion06.00_500[1,2],ubicacion06.06_500[1,2],ubicacion06.12_500[1,2],ubicacion06.18_500[1,2]),
+                            lat_2_b = c(lonlats05_500$lat_2_b,ubicacion06.06_500[1,2],ubicacion06.12_500[1,2],ubicacion06.18_500[1,2],ubicacion07.00_500[1,2]),
+                            lon_1_b = c(lonlats05_500$lon_1_b,ubicacion06.00_500[1,1],ubicacion06.06_500[1,1],ubicacion06.12_500[1,1],ubicacion06.18_500[1,1]),
+                            lon_2_b = c(lonlats05_500$lon_2_b,ubicacion06.06_500[1,1],ubicacion06.12_500[1,1],ubicacion06.18_500[1,1],ubicacion07.00_500[1,1]))
 
 dia06_500 <- mapeo_D_500(datoslista_500hPa_07$cero,
                          datoslista_500hPa_07$cero$intensidad,
@@ -961,6 +1003,17 @@ dia06_500 <- mapeo_D_500(datoslista_500hPa_07$cero,
 ggsave("mapa_dia06_final_500hPa.png",dia06_500,path = "/home/felipe/Desktop/Labo/trabajo_final/mapas_des_500/", width = 30, height = 18, dpi = 72)
 
 
+# mapa final --------------------------------------------------------------
+
+#Último mapa en el cual combino ambas trayectorias.
+mapa_final_trayectorias <- mapeo_D_final(datoslista_500hPa_07$cero,
+                                         datoslista_500hPa_07$cero$intensidad,
+                                         datoslista_500hPa_07$cero$longitude,
+                                         datoslista_500hPa_07$cero$latitude,
+                                         lonlats06,
+                                         lonlats06_500)
+
+ggsave("mapa_final.png",mapa_final_trayectorias,path = "/home/felipe/Desktop/Labo/trabajo_final/mapa_final/", width = 30, height = 18, dpi = 72)
 
 
 
