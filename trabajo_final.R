@@ -421,7 +421,7 @@ mapeo_D_500 <- function(hora,intensidad,longitud,latitud,segmentos) {
           legend.title = element_text(size = 30))
 }
 
-mapeo_final <- function(hora,intensidad,longitud,latitud,segmentosa,segmentosb) {
+mapeo_D_final <- function(hora,intensidad,longitud,latitud,segmentosa,segmentosb) {
   radical_b <- c(max500_D,min500_D)
   rango_valores <- range(radical_b)
   num_ticks = 15
