@@ -10,7 +10,7 @@ require(gridExtra)
 require(cowplot)
 require(colorspace)
 #ahora abro el archivo con los datos de viento.
-path <- "~/Desktop/Labo/trabajo_final/datos_trabajo_final"
+path <- "~/Desktop/Labo/datos_trabajo_final"
 archivo <- paste0(path,"/u_v_components_300_500hPa_2010-2012.nc")
 
 GlanceNetCDF(archivo)
